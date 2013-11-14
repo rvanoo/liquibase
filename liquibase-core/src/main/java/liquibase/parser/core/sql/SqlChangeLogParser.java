@@ -34,16 +34,15 @@ public class SqlChangeLogParser implements ChangeLogParser {
             InputStream sqlStream = resourceAccessor.getResourceAsStream(physicalChangeLogLocation);
             String sql = StreamUtil.getStreamContents(sqlStream, null);
             change.setSql(sql);
-            change.setSplitStatements(false);
-            change.setEndDelimiter("GO");
         } catch (IOException e) {
             throw new ChangeLogParseException(e);
         }
         change.setResourceAccessor(resourceAccessor);
-        change.setSplitStatements(false);
-        change.setStripComments(true);
+        change.setSplitStatements(true);
+        change.setStripComments(false);
+        change.setEndDelimiter("GO");
 
-        ChangeSet changeSet = new ChangeSet("raw", "includeAll", false, true, physicalChangeLogLocation, null, null, true, ObjectQuotingStrategy.LEGACY, changeLog);
+        ChangeSet changeSet = new ChangeSet("raw", "includeAll", false, true, physicalChangeLogLocation, null, null, false, ObjectQuotingStrategy.LEGACY, changeLog);
         changeSet.addChange(change);
 
         changeLog.addChangeSet(changeSet);
