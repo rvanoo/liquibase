@@ -15,17 +15,14 @@ import java.io.InputStream;
 
 public class SqlChangeLogParser implements ChangeLogParser {
 
-    @Override
     public boolean supports(String changeLogFile, ResourceAccessor resourceAccessor) {
         return changeLogFile.endsWith(".sql");
     }
 
-    @Override
     public int getPriority() {
         return PRIORITY_DEFAULT;
     }
     
-    @Override
     public DatabaseChangeLog parse(String physicalChangeLogLocation, ChangeLogParameters changeLogParameters, ResourceAccessor resourceAccessor) throws ChangeLogParseException {
 
         DatabaseChangeLog changeLog = new DatabaseChangeLog();
@@ -37,6 +34,8 @@ public class SqlChangeLogParser implements ChangeLogParser {
             InputStream sqlStream = resourceAccessor.getResourceAsStream(physicalChangeLogLocation);
             String sql = StreamUtil.getStreamContents(sqlStream, null);
             change.setSql(sql);
+            change.setSplitStatements(false);
+            change.setEndDelimiter("GO");
         } catch (IOException e) {
             throw new ChangeLogParseException(e);
         }
